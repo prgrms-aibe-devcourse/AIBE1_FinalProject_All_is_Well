@@ -12,9 +12,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileResponse {
+public class ProfileUpdateRequest {
     private String nickname;
-    private String email;
     private String profileImageUrl;
-    private List<String> interestCategories;
+    private List<Long> interestCategoryIds;
 }
