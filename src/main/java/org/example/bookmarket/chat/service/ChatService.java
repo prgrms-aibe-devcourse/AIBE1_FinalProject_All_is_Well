@@ -58,7 +58,28 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
-    // 🔧 리팩토링된 공통 메서드
+    public ChatMessageResponse sendMessage(ChatMessageRequest request) {
+        ChatChannel channel = chatChannelRepository.findById(request.getChannelId())
+                .orElseThrow(() -> new IllegalArgumentException("채널 없음"));
+        User sender = getUserById(request.getSenderId());
+
+        ChatMessage message = ChatMessage.builder()
+                .channel(channel)
+                .sender(sender)
+                .messageContent(request.getContent())
+                .isRead(false)
+                .build();
+
+        chatMessageRepository.save(message);
+
+        // 채널에 최신 메시지 시간 갱신
+        channel.updateLastMessageAt(message.getSentAt());
+        chatChannelRepository.save(channel);
+
+        return toChatMessageResponse(message);
+    }
+
+    // 🔧 공통 메서드
     private User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
@@ -79,7 +100,7 @@ public class ChatService {
         return ChatMessageResponse.builder()
                 .messageId(msg.getId())
                 .senderId(msg.getSender().getId())
-                .content(msg.getMessageContent())
+                .content(msg.getMessageContent()) // 중요: messageContent 사용
                 .isRead(msg.getIsRead())
                 .sentAt(msg.getSentAt())
                 .build();

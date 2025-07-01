@@ -40,4 +40,8 @@ public class ChatChannel {
         this.createdAt = now;
         this.lastMessageAt = now;
     }
+
+    public void updateLastMessageAt(LocalDateTime now) {
+        this.lastMessageAt = now;
+    }
 }
