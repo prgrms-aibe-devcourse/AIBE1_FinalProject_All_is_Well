@@ -23,8 +23,15 @@
                     <h2 class="text-lg font-bold text-[#111418] border-b border-gray-200 px-4 pb-3">Step 1: 책 정보</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
                         <div>
-                            <label class="font-medium text-base">ISBN</label>
-                            <input th:field="*{isbn}" placeholder="ISBN 13자리를 입력하세요" class="form-input w-full h-14 mt-2 rounded-lg border-gray-300" />
+                            <label class="font-medium text-base">ISBN
+                                <span class="ml-1 text-gray-500 cursor-help" title="ISBN은 책 뒷면 바코드에 위치한 13자리의 숫자입니다.
+                                                                                    &#10;- 가 존재할 경우 -를 제외한 숫자만 입력해주십시오.
+                                                                                    &#10;ISBN 13자리를 입력하신 뒤 불러오기 버튼을 누르면 나머지 정보는 자동으로 입력됩니다.">?</span>
+                            </label>
+                            <div class="flex gap-2 mt-2">
+                                <input th:field="*{isbn}" placeholder="ISBN 13자리를 입력하세요" class="form-input flex-1 h-14 rounded-lg border-gray-300" />
+                                <button type="button" id="fetch-isbn-btn" class="px-4 h-14 rounded-lg bg-gray-800 text-white font-medium">불러오기</button>
+                            </div>
                         </div>
                         <div>
                             <label class="font-medium text-base">제목</label>
@@ -38,9 +45,13 @@
                             <label class="font-medium text-base">출판사</label>
                             <input th:field="*{publisher}" placeholder="출판사" class="form-input w-full h-14 mt-2 rounded-lg border-gray-300" />
                         </div>
-                        <div class="md:col-span-2">
+                        <div>
                             <label class="font-medium text-base">출판년도</label>
                             <input type="number" th:field="*{publicationYear}" placeholder="예) 2024" class="form-input w-full h-14 mt-2 rounded-lg border-gray-300" />
+                        </div>
+                        <div>
+                            <label class="font-medium text-base">희망 소비자 가격</label>
+                            <input type="number" th:field="*{newPrice}" placeholder="예) 30000" class="form-input w-full h-14 mt-2 rounded-lg border-gray-300" />
                         </div>
                     </div>
                 </section>
@@ -113,5 +124,56 @@
 
     <div th:replace="~{fragments/footer :: footer}"></div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isbnInput = document.querySelector('input[name="isbn"]');
+        const titleInput = document.querySelector('input[name="title"]');
+        const authorInput = document.querySelector('input[name="author"]');
+        const publisherInput = document.querySelector('input[name="publisher"]');
+        const yearInput = document.querySelector('input[name="publicationYear"]');
+        const newPriceInput = document.querySelector('input[name="newPrice"]');
+        const fetchBtn = document.getElementById('fetch-isbn-btn');
+
+        if (fetchBtn) {
+            fetchBtn.addEventListener('click', function () {
+                const isbn = isbnInput.value.trim();
+                if (!isbn) {
+                    alert('ISBN을 입력해주세요.');
+                    return;
+                }
+                fetch(`/used-books/isbn/${isbn}`)
+                    .then(async r => {
+                        if (!r.ok) {
+                            let msg = '도서 정보를 불러오지 못했습니다.';
+                            try {
+                                const err = await r.json();
+                                if (err.message) msg = err.message;
+                            } catch (_) {}
+                            throw new Error(msg);
+                        }
+                        return r.json();
+                    })
+                    .then(data => {
+                        titleInput.value = data.title || '';
+                        authorInput.value = data.author || '';
+                        publisherInput.value = data.publisher || '';
+                        if (data.publicationYear) {
+                            yearInput.value = data.publicationYear;
+                        }
+                        if (data.newPrice) {
+                            newPriceInput.value = data.newPrice;
+                        }
+                    })
+                    .catch(err => {
+                        if (err.name === 'TypeError') {
+                            alert('API 요청에 실패했습니다.');
+                        } else {
+                            alert(err.message);
+                        }
+                    });
+            });
+        }
+    });
+</script>
 </body>
 </html>

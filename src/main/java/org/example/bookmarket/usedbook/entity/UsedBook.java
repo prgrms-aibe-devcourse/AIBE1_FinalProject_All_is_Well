@@ -30,6 +30,10 @@ public class UsedBook extends TimeEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     private String conditionGrade;
     private boolean hasWriting;
     private boolean hasStains;

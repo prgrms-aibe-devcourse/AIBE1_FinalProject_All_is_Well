@@ -1,16 +1,13 @@
 package org.example.bookmarket.usedbook.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-
-public record UsedBookPostRequest(
+public record UsedBookResponse(
+        Long id,
+        Long bookId,
         String isbn,
         String title,
         String author,
         String publisher,
         Integer publicationYear,
-        Integer newPrice,
         String conditionGrade,
         boolean hasWriting,
         boolean hasStains,
@@ -19,7 +16,7 @@ public record UsedBookPostRequest(
         boolean likeNew,
         String detailedCondition,
         Integer sellingPrice,
+        String status,
         Long categoryId,
-        Long sellerId,
-        List<MultipartFile> images
+        Long sellerId
 ) {}
