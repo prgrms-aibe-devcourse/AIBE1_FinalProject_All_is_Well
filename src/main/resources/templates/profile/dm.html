@@ -11,16 +11,17 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <main class="flex-1 flex justify-center px-6 md:px-40 py-6">
-        <div class="w-full max-w-[960px] flex flex-col gap-10"> <div class="flex justify-center gap-2 flex-wrap">
-            <a th:href="@{/profile/dm}" class="tab-btn px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100"
-               th:classappend="${currentUri == '/profile/dm' ? 'bg-gray-200 text-black font-bold' : ''}">DM 목록</a>
-            <a th:href="@{/profile/sales}" class="tab-btn px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100"
-               th:classappend="${currentUri == '/profile/sales' || currentUri == '/profile/main' ? 'bg-gray-200 text-black font-bold' : ''}">판매 목록</a>
-            <a th:href="@{/profile/purchases}" class="tab-btn px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100"
-               th:classappend="${currentUri == '/profile/purchases' ? 'bg-gray-200 text-black font-bold' : ''}">구매 목록</a>
-            <a th:href="@{/profile/wishlist}" class="tab-btn px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100"
-               th:classappend="${currentUri == '/profile/wishlist' ? 'bg-gray-200 text-black font-bold' : ''}">위시리스트</a>
-        </div>
+        <div class="w-full max-w-[960px] flex flex-col gap-10">
+            <div class="flex justify-center gap-2 flex-wrap">
+                <a th:href="@{/profile/dm}" class="tab-btn px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100"
+                   th:classappend="${currentUri == '/profile/dm' ? 'bg-gray-200 text-black font-bold' : ''}">DM 목록</a>
+                <a th:href="@{/profile/sales}" class="tab-btn px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100"
+                   th:classappend="${currentUri == '/profile/sales' || currentUri == '/profile/main' ? 'bg-gray-200 text-black font-bold' : ''}">판매 목록</a>
+                <a th:href="@{/profile/purchases}" class="tab-btn px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100"
+                   th:classappend="${currentUri == '/profile/purchases' ? 'bg-gray-200 text-black font-bold' : ''}">구매 목록</a>
+                <a th:href="@{/profile/wishlist}" class="tab-btn px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100"
+                   th:classappend="${currentUri == '/profile/wishlist' ? 'bg-gray-200 text-black font-bold' : ''}">위시리스트</a>
+            </div>
 
             <section th:fragment="section">
                 <h1 class="text-2xl font-bold text-[#111418] px-4 pb-4">DM 목록</h1>
@@ -40,7 +41,9 @@
                             <td colspan="4" class="text-center p-8 text-gray-500">메시지 내역이 없습니다.</td>
                         </tr>
                         <tr th:each="dm : ${dmList}" class="border-b hover:bg-gray-50">
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap" th:text="${dm.partnerNickname}">상대방</td>
+                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                <a th:href="@{/chatroom/{id}(id=${dm.channelId})}" th:text="${dm.partnerNickname}">상대방</a>
+                            </td>
                             <td class="px-6 py-4" th:text="${dm.bookTitle}">책 제목</td>
                             <td class="px-6 py-4 text-ellipsis overflow-hidden max-w-[200px]" th:text="${dm.lastMessage}">최근 메시지</td>
                             <td class="px-6 py-4" th:text="${#temporals.format(dm.updatedAt, 'yyyy-MM-dd')}">2025-06-26</td>
