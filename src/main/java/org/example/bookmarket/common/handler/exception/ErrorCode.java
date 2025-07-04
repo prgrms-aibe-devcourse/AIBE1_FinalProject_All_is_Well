@@ -40,7 +40,11 @@ public enum ErrorCode {
     INVALID_BOOK_CONDITION(HttpStatus.BAD_REQUEST, "잘못된 도서 상태 정보입니다."),
 
     // == Book Errors == //
-    BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 도서를 찾을 수 없습니다.");
+    BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 도서를 찾을 수 없습니다."),
+
+    // == 외부 시스템 연동 오류 ==
+    S3_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S3 이미지 업로드에 실패했습니다."),
+    AI_ANALYSIS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI 이미지 분석에 실패했습니다.");
 
     private final HttpStatus statusCode;
     private final String message;

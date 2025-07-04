@@ -2,16 +2,13 @@ package org.example.bookmarket.auth.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.bookmarket.auth.JwtTokenProvider;
 import org.example.bookmarket.auth.dto.LoginRequest;
 import org.example.bookmarket.auth.dto.LoginResponse;
 import org.example.bookmarket.auth.dto.SignUpRequest;
 import org.example.bookmarket.auth.service.AuthService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 
 @Controller
 @RequestMapping("/auth")
@@ -23,8 +20,8 @@ public class AuthController {
     @PostMapping("/api/login")
     @ResponseBody
     public ResponseEntity<LoginResponse> apiLogin(@Valid @RequestBody LoginRequest request) {
-
-        return ResponseEntity.ok(new LoginResponse("dummy-api-token-for-" + request.email()));
+        LoginResponse tokenInfo = authService.login(request);
+        return ResponseEntity.ok(tokenInfo);
     }
 
     // [페이지 반환] 로그인 페이지를 보여줍니다.

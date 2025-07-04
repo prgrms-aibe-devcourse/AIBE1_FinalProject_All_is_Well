@@ -35,7 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.0'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.1'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -48,6 +48,9 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation platform('com.google.cloud:libraries-bom:26.42.0') // Google Cloud 라이브러리 버전 관리
+    implementation 'com.google.cloud:google-cloud-vertexai'          // Vertex AI 라이브러리
+    implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
 }
 
 tasks.named('test') {

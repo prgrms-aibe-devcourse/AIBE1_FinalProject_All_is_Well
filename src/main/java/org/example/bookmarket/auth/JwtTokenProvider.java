@@ -2,8 +2,6 @@ package org.example.bookmarket.auth;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.io.Decoders;
-import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookmarket.common.handler.exception.CustomException;
@@ -16,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -29,18 +28,29 @@ public class JwtTokenProvider {
     private String secretKeyString;
 
     @Value("${jwt.expiration-ms}")
-    private long expirationMs;
+    private long accessTokenExpirationMs;
+
+    @Value("${jwt.refresh-expiration-ms}")
+    private long refreshTokenExpirationMs;
 
     private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Authentication authentication) {
+    public String generateAccessToken(Authentication authentication) {
+        return generateToken(authentication.getName(), accessTokenExpirationMs);
+    }
+
+    public String generateRefreshToken(Authentication authentication) {
+        return generateToken(authentication.getName(), refreshTokenExpirationMs);
+    }
+
+    private String generateToken(String subject, long expirationMs) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
-                .subject(authentication.getName())
+                .subject(subject)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSecretKey())
