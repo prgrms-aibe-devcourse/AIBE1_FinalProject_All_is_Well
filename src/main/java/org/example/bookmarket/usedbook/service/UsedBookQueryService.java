@@ -21,4 +21,11 @@ public interface UsedBookQueryService {
      * @return 최신 중고책 목록
      */
     List<UsedBookResponse> getLatestUsedBooks(int limit);
+
+    /**
+     * 특수 계정 사용자가 등록한 중고책을 조회합니다.
+     * @param limit 최대 조회 건수
+     * @return 특수 계정 중고책 목록
+     */
+    List<UsedBookResponse> getSpecialUserBooks(int limit);
 }

@@ -7,6 +7,7 @@ import org.example.bookmarket.usedbook.dto.UsedBookResponse;
 import org.example.bookmarket.usedbook.dto.UsedBookSummary;
 import org.example.bookmarket.usedbook.entity.UsedBook;
 import org.example.bookmarket.usedbook.repository.UsedBookRepository;
+import org.example.bookmarket.specialaccount.service.SpecialAccountService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class UsedBookQueryServiceImpl implements UsedBookQueryService {
 
     private final UsedBookRepository usedBookRepository;
     private final AiService aiService;
+    private final SpecialAccountService specialAccountService;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,8 +49,10 @@ public class UsedBookQueryServiceImpl implements UsedBookQueryService {
     @Transactional(readOnly = true)
     public List<UsedBookResponse> getLatestUsedBooks(int limit) {
         PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "id"));
-        return usedBookRepository.findAll(pageRequest).stream()
-                .map(this::toResponse)
+        // 특수 계정 판매글도 함께 노출하기 위해 별도의 제외 처리 없이 전체 조회합니다.
+        List<UsedBook> books = usedBookRepository.findAll(pageRequest).getContent();
+        return books.stream()
+        .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -59,6 +63,19 @@ public class UsedBookQueryServiceImpl implements UsedBookQueryService {
             return Collections.emptyList();
         }
         return usedBookRepository.findByKeywords(keywords).stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UsedBookResponse> getSpecialUserBooks(int limit) {
+        List<String> special = specialAccountService.getActiveNicknames();
+        if (special.isEmpty()) {
+            return Collections.emptyList();
+        }
+        PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "id"));
+        return usedBookRepository.findBySellerNicknames(special, pageRequest).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }

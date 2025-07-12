@@ -47,4 +47,16 @@ public interface UsedBookRepository extends JpaRepository<UsedBook, Long>, UsedB
             @Param("userId") Long userId,
             Pageable pageable
     );
+
+    @Query("SELECT ub FROM UsedBook ub WHERE ub.seller.nickname IN :nicknames ORDER BY ub.id DESC")
+    List<UsedBook> findBySellerNicknames(
+            @Param("nicknames") List<String> nicknames,
+            Pageable pageable
+    );
+
+    @Query("SELECT ub FROM UsedBook ub WHERE ub.seller.nickname NOT IN :nicknames ORDER BY ub.id DESC")
+    List<UsedBook> findBySellerNicknamesNotIn(
+            @Param("nicknames") List<String> nicknames,
+            Pageable pageable
+    );
 }

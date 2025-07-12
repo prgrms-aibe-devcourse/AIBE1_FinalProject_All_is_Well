@@ -49,6 +49,10 @@ public class HomeController {
         List<UsedBookResponse> recommendedBooks = recommendationService.getPersonalizedRecommendations(userId, 4);
         model.addAttribute("recommendedBooks", recommendedBooks);
 
+        // 특수 계정 판매글
+        List<UsedBookResponse> specialBooks = usedBookQueryService.getSpecialUserBooks(4);
+        model.addAttribute("specialUserBooks", specialBooks);
+
         // 2. 방금 올라온 따끈한 책 데이터 (그대로 유지)
         List<UsedBookResponse> newlyAddedBooks = usedBookQueryService.getLatestUsedBooks(4);
         model.addAttribute("newlyAddedBooks", newlyAddedBooks);

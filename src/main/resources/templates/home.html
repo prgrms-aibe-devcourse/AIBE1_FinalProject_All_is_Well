@@ -27,6 +27,22 @@
                 </div>
             </section>
 
+            <!-- 특수 계정 판매글 -->
+            <section class="mt-6" th:if="${!#lists.isEmpty(specialUserBooks)}">
+                <h2 class="text-[#111418] text-[22px] font-bold leading-tight px-4 pb-3">특수 계정 판매글</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-4">
+                    <a th:each="book : ${specialUserBooks}" th:href="@{/used-books/{id}(id=${book.id})}" class="flex flex-col gap-2 hover:scale-105 hover:shadow-lg transition duration-300 cursor-pointer">
+                        <div class="w-full aspect-[3/4] rounded-lg bg-cover bg-center" th:style="'background-image: url(' + ${book.coverImageUrl} + ')'">
+                        </div>
+                        <div>
+                            <p class="font-bold text-base text-[#111418] truncate" th:text="${book.title}"></p>
+                            <p class="text-sm text-gray-600 truncate" th:text="${book.author}"></p>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+
             <!-- AI 추천 도서 -->
             <section class="mt-6">
                 <h2 class="text-[#111418] text-[22px] font-bold leading-tight px-4 pb-3">맞춤 추천 도서</h2>

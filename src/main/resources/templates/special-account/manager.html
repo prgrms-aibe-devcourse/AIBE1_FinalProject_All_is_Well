@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>특수 계정 관리</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+<body class="flex flex-col min-h-screen">
+<div class="flex grow flex-col">
+  <div th:replace="~{fragments/header :: header}"></div>
+  <main class="flex-1 p-6 max-w-3xl mx-auto w-full">
+    <h1 class="text-xl font-bold mb-4">특수 계정 관리</h1>
+    <form th:action="@{/admin/special-accounts(all=${showAll})}" method="post" class="space-y-2 mb-6" th:object="${accountForm}">
+      <input type="hidden" th:field="*{id}" />
+      <div>
+        <label class="block text-sm">닉네임</label>
+        <input type="text" th:field="*{nickname}" class="border w-full" />
+      </div>
+      <div>
+        <label class="block text-sm">상태</label>
+        <select th:field="*{status}" class="border w-full">
+          <option th:value="${T(org.example.bookmarket.specialaccount.entity.SpecialAccountStatus).ACTIVE}">ACTIVE</option>
+          <option th:value="${T(org.example.bookmarket.specialaccount.entity.SpecialAccountStatus).INACTIVE}">INACTIVE</option>
+        </select>
+      </div>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">저장</button>
+    </form>
+
+    <form method="get" class="mb-4">
+      <label class="inline-flex items-center">
+        <input type="checkbox" name="all" value="true" th:checked="${showAll}" class="mr-2" onchange="this.form.submit()" />
+        비활성 포함
+      </label>
+    </form>
+
+    <table class="w-full text-left border">
+      <thead>
+      <tr class="bg-gray-100">
+        <th class="p-2">ID</th>
+        <th class="p-2">닉네임</th>
+        <th class="p-2">상태</th>
+        <th class="p-2">수정</th>
+        <th class="p-2">토글</th>
+        <th class="p-2">삭제</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="a : ${accounts}">
+        <td class="p-2" th:text="${a.id}"></td>
+        <td class="p-2" th:text="${a.nickname}"></td>
+        <td class="p-2" th:text="${a.status}"></td>
+        <td class="p-2">
+          <a th:href="@{/admin/special-accounts/{id}(id=${a.id},all=${showAll})}" class="text-green-600">수정</a>
+        </td>
+        <td class="p-2">
+          <form th:action="@{/admin/special-accounts/{id}/toggle(id=${a.id},all=${showAll})}" method="post">
+            <button type="submit" class="text-blue-600">토글</button>
+          </form>
+        </td>
+        <td class="p-2">
+          <form th:action="@{/admin/special-accounts/{id}/delete(id=${a.id},all=${showAll})}" method="post">
+            <button type="submit" class="text-red-600">삭제</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+</body>
+</html>
